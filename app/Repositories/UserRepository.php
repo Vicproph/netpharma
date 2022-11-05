@@ -22,6 +22,7 @@ class UserRepository extends Repository
 
     public function update(int $id, array $attributes)
     {
+        if (isset($attributes['password']))
         $attributes['password'] = Hash::make($attributes['password']);
         return parent::update($id,$attributes);
     }

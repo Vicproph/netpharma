@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 abstract class Repository
 {
 
-    protected Model $model;
+    public Model $model;
 
     public function __construct(Model $model)
     {
@@ -36,6 +36,10 @@ abstract class Repository
 
     public function update(int $id, array $attributes)
     {
-        return $this->get($id)?->update($attributes);
+        $model = $this->get($id);
+        if (!$model)
+            return null;
+        $model->update($attributes);
+        return $model;
     }
 }
