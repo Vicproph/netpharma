@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\User\CreateUserRequest;
 use App\Http\Requests\User\LoginUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Auth;
@@ -16,11 +17,14 @@ class UserController extends Controller
         UserRepository $userRepository,
     ) {
         $this->repository = $userRepository;
+        $this->resource = new UserResource(null);
         $this->requests = [
             'create' => new CreateUserRequest,
             'update' => new UpdateUserRequest,
             'login' => new LoginUserRequest
         ];
+
+        $this->middleware('auth:api')->only(['index', 'show', 'delete', 'update']);
     }
 
     public function login()

@@ -7,6 +7,7 @@ use App\Repositories\Repository;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,6 +20,8 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     protected Repository $repository;
+    protected JsonResource $resource;
+
     protected  $requests = [ // each form request for each action is here
         'index' => null,
         'show' => null,
@@ -27,17 +30,13 @@ class Controller extends BaseController
         'delete' => null
     ];
 
-    public function __construct(
-        Repository $repository,
-    ) {
-        $this->repository = $repository;
-    }
+   
 
     public function index()
     {
         $user = Auth::user();
         if ($user->can('viewAny', $this->repository->model)) {
-            return $this->repository->getAll();
+            return $this->resource->collection($this->repository->getAll());
         } else
             return response()->json(['message' => __('resource.actionUnauthorized')], 403);
     }
@@ -51,7 +50,9 @@ class Controller extends BaseController
             return response()->json(['message' => __('resource.notFound')], 404);
 
         if ($user->can('view', $model)) {
-            return $model;
+
+            return $this->resource->make($model);
+
         } else
             return response()->json(['message' => __('resource.actionUnauthorized')], 403);
     }
@@ -77,7 +78,8 @@ class Controller extends BaseController
         request()->validate($this->requests['create']->rules());
 
         $attributes = $this->getFormInputs();
-        return $this->repository->create($attributes);
+        $model = $this->repository->create($attributes);
+        return $this->resource->make($model);
     }
 
     public function update(int $id)
@@ -89,8 +91,9 @@ class Controller extends BaseController
 
         if ($user->can('update', $model)) {
             $attributes = $this->getFormInputs();
-            return $this->repository->update($id, $attributes);
-            
+            $model = $this->repository->update($id, $attributes);
+            return $this->resource->make($model);
+
         } else
             return response()->json(['message' => __('resource.actionUnauthorized')], 403);
     }
