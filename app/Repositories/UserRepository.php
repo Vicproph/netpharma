@@ -12,6 +12,7 @@ class UserRepository extends Repository
     public function __construct(User $user)
     {
         $this->model = $user;
+        $this->relationships[] = 'posts';
     }
 
     public function create(array $attributes)
