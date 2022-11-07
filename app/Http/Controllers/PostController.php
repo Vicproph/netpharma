@@ -7,6 +7,7 @@ use App\Http\Requests\Post\UpdatePostRequest;
 use App\Http\Resources\PostResource;
 use App\Repositories\PostRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -23,5 +24,9 @@ class PostController extends Controller
         ];
     }
 
-    
+    public function store()
+    {
+        request()['user_id'] = Auth::id();
+        return parent::store();
+    }
 }
