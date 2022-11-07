@@ -15,9 +15,10 @@ class PostResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'id' => $this->id,
             'title' => $this->title,
             'body' => $this->body,
-            'user' => $this->whenLoaded('user')
+            'user' => UserResource::make($this->whenLoaded('user'))
         ];
     }
 }
