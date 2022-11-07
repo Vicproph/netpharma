@@ -24,7 +24,7 @@ class UserController extends Controller
             'login' => new LoginUserRequest
         ];
 
-        $this->middleware('auth:api')->only(['index', 'show', 'delete', 'update']);
+        $this->middleware('auth:api')->only(['index', 'show', 'destroy', 'update']);
     }
 
     public function login()
