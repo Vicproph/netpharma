@@ -25,7 +25,7 @@ class UpdateUserRequest extends Request
     {
         return [
             'name' => ['nullable','string', 'min:4'],
-            'email' => ['nullable', 'email'],
+            'email' => ['nullable', 'email', 'unique:users'],
             'password' => ['nullable', 'string', 'min:8']
         ];
     }
