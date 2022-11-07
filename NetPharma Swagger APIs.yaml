@@ -1,0 +1,494 @@
+openapi: 3.0.0
+
+info:
+  title: NetPharma endpoints
+  description: NetPharma APIs
+  contact:
+    name: Mohamad
+    url: https://google.com
+  version: 1.0.0
+servers: 
+  - url: http://localhost:8000/api/
+paths:
+   
+  /posts:
+    
+    get:
+      security: 
+      - BearerAuth: []
+      summary: Index
+      description: Index
+      tags: 
+        - Post Resource
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  properties: 
+                    data:
+                      type: array
+                      items:
+                        properties:
+                          title:
+                            type: string
+                            example: title title title
+                          body:
+                            type: string
+                            example: bodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybody
+                          user:
+                            type: object
+                            example: {"id":1,"name":"someName"}
+        401:
+          $ref: '#/components/responses/401'           
+    post:
+      tags: 
+          - Post Resource
+      security: 
+      - BearerAuth: []
+      summary: Store
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: someTitle
+                  minLength: 3
+                body:
+                  type: string
+                  example: someBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBody
+                  minLength: 100
+              required:
+                  - title
+                  - body
+      responses:
+        201:
+          description: Resource created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/post'
+        401:
+          $ref: '#/components/responses/401'           
+
+        422:
+          $ref: '#/components/responses/422'           
+          
+  /posts/{id}:
+    get:
+      tags: 
+        - Post Resource
+      summary: Show
+      security: 
+      - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            example: 4
+      responses:
+        200:
+          description: Success 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/post'
+        401:
+          $ref: '#/components/responses/401'           
+
+        403:
+          $ref: '#/components/responses/403'           
+
+        404:
+          $ref: '#/components/responses/401'           
+
+        
+    put:
+      tags: 
+        - Post Resource
+      summary: Update
+      security: 
+      - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            example: 4
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: someTitle
+                  minLength: 3
+                body:
+                  type: string
+                  example: someBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBodysomeBody
+                  minLength: 100
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/post'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        422:
+          $ref: '#/components/responses/422'
+    delete:
+      tags: 
+        - Post Resource
+      summary: Delete
+      security: 
+      - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            example: 4
+      responses:
+        200:
+            description: Success 
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: "موجوديت حذف شد"
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+  
+  /users/login:
+    post:
+      tags: 
+        - User Resource
+      summary: Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: something@somewhere.com
+                password:
+                  type: string
+                  example: 12341234
+                  minLength: 8
+              required:
+                  - email
+                  - password
+      responses:
+        200:
+          description: Successful Login
+        422:
+          $ref: '#/components/responses/422'
+  
+  /users:
+    get:
+      tags: 
+        - User Resource
+      summary: Index
+      security: 
+      - BearerAuth: []
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                    example: 4
+                  name:
+                    type: string
+                    example: رضا
+                  email:
+                    type: string
+                    example: a@b.com
+                  password:
+                    type: string
+                    example: "12341234"
+                    minLength: 8
+                required: 
+                  - id
+                  - name
+                  - email
+                  - password
+        401:
+          $ref: '#/components/responses/401'
+    post:
+      tags: 
+        - User Resource
+      summary: Register
+      requestBody:
+        content:
+          
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: محمد
+                email:
+                  type: string
+                  example: something@somewhere.com
+                password:
+                  type: string
+                  example: 12341234
+                  minLength: 8
+              required:
+                  - email
+                  - password
+                  - name
+      responses:
+        200:
+          description: Successful Registeration
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                    example: 4
+                  name:
+                    type: string
+                    example: رضا
+                  email:
+                    type: string
+                    example: a@b.com
+                  password:
+                    type: string
+                    example: "12341234"
+                    minLength: 8
+                required: 
+                  - id
+                  - name
+                  - email
+                  - password
+        422:
+          $ref: '#/components/responses/422'
+  /users/{id}:
+    get:
+      tags: 
+        - User Resource
+      summary: Show
+      security: 
+        - BearerAuth: []
+      parameters: 
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            example: 4
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                    example: 4
+                  name:
+                    type: string
+                    example: رضا
+                  email:
+                    type: string
+                    example: a@b.com
+                  password:
+                    type: string
+                    example: "12341234"
+                    minLength: 8
+                required: 
+                  - id
+                  - name
+                  - email
+                  - password
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+    delete:
+      tags: 
+        - User Resource
+      summary: Delete
+      security: 
+        - BearerAuth: []
+      parameters: 
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            example: 4
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: موجودیت حذف شد
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+    put:
+      tags: 
+        - User Resource
+      summary: Register
+      parameters: 
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            example: 4
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: محمد
+                email:
+                  type: string
+                  example: something@somewhere.com
+                password:
+                  type: string
+                  example: 12341234
+                  minLength: 8
+      responses:
+        200:
+          description: Successful Registeration
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                    example: 4
+                  name:
+                    type: string
+                    example: رضا
+                  email:
+                    type: string
+                    example: a@b.com
+                  password:
+                    type: string
+                    example: "12341234"
+                    minLength: 8
+                required: 
+                  - id
+                  - name
+                  - email
+                  - password
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/401'
+        404:
+          $ref: '#/components/responses/401'
+        422:
+          $ref: '#/components/responses/422'
+
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    post:
+      type: object
+      properties:
+        title:
+          type: string
+          example: title title title
+        body:
+          type: string
+          example: bodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybodybody
+        user:
+          type: object
+          example: {"id":1,"name":"someName"}
+  responses:
+    401:
+      description: Unauthenticated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              message:
+                type: string
+                example: Unauthenticated
+    403:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              message:
+                type: string
+                example: شما اجازه این کار را ندارید
+    404:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              message:
+                type: string
+                example: موجوديت وجود ندارد
+    422:
+      description: Input Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              message:
+                type: object
+                example: {"someField":"some error for this field"}  
