@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Request;
 use App\Repositories\Repository;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -78,7 +79,12 @@ class Controller extends BaseController
         request()->validate($this->requests['create']->rules());
 
         $attributes = $this->getFormInputs();
+        /**
+         * @var Model $model
+         */
         $model = $this->repository->create($attributes);
+        $model = $model->load($model->getAllRelationships());
+        
         return $this->resource->make($model);
     }
 
@@ -89,9 +95,18 @@ class Controller extends BaseController
         $user = Auth::user();
         $model = $this->repository->get($id);
 
+        if (!$model)
+            return response()->json(['message' => __('resource.notFound')], 404);
+
         if ($user->can('update', $model)) {
             $attributes = $this->getFormInputs();
+            /**
+             * @var Model $model
+             */
             $model = $this->repository->update($id, $attributes);
+
+            $model = $model->load($model->getAllRelationships());
+
             return $this->resource->make($model);
 
         } else
